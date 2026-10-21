@@ -15,7 +15,7 @@
 
   <div class="w-full max-w-sm my-auto">
     
-    <!-- 1. PHONE NUMBER INPUT & MAPS REDIRECT -->
+    <!-- 1. PHONE NUMBER INPUT & REVIEW REDIRECT -->
     <div id="screenEntry" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-5">
       <div class="w-16 h-16 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto text-3xl font-black">
         🎁
@@ -25,7 +25,7 @@
         <h1 class="text-2xl font-black tracking-tight text-white">Jaibhajarang Mobiles</h1>
         <p class="text-xs text-amber-400 font-bold uppercase tracking-wider">Rate Us on Google & Win a Gift 🎡</p>
         <p class="text-[11px] text-slate-400 pt-1 leading-relaxed">
-          Drop your genuine review on Google Maps and spin the wheel to claim a free mobile accessory at the counter!
+          Drop your genuine review on Google and spin the wheel to claim a free mobile accessory at the counter!
         </p>
       </header>
 
@@ -51,7 +51,7 @@
       </div>
 
       <button id="submitBtn" onclick="handleReviewAndProceed()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 py-3.5 rounded-2xl text-slate-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all">
-        Rate on Google Maps & Spin Wheel ➔
+        Rate on Google & Spin Wheel ➔
       </button>
 
       <p class="text-[10px] text-slate-500">1 review reward per customer / bill.</p>
@@ -63,7 +63,7 @@
         <div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-lg font-bold mb-1">
           ✓
         </div>
-        <h2 class="text-xl font-black text-white">Google Maps Opened!</h2>
+        <h2 class="text-xl font-black text-white">Review Box Opened!</h2>
         <p class="text-[11px] text-amber-400 font-semibold">Post your review & spin to unlock your gift</p>
       </header>
 
@@ -124,11 +124,11 @@
   </div>
 
   <script>
-    // Live Google Apps Script Web App URL
+    // Live Google Apps Script API
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
-    
-    // Your exact Google Maps link
-    const GOOGLE_MAPS_LINK = "https://maps.app.goo.gl/nzR7dtVtwJVSxi4aA";
+
+    // Direct Google Review link that opens the 5-star modal without timing out
+    const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Jaibhajarang+Mobiles+Sales+and+Service+Karimnagar#lrd=0x3bccd91aa5398eb9:0xde16e64f2d90bef1,3";
 
     const PRIZES = [
       { text: "Tempered Glass", color: "#f59e0b" },
@@ -200,21 +200,20 @@
       errorMsg.classList.add('hidden');
       currentPhone = phone;
 
-      // 1. Open Google Maps IMMEDIATELY on touch/click so phone popup blockers don't kill it
-      const mapsWindow = window.open(GOOGLE_MAPS_LINK, '_blank');
+      // 1. Immediately launch Google Review to bypass mobile popup blockers
+      const reviewWindow = window.open(GOOGLE_REVIEW_URL, '_blank');
 
-      // 2. Switch this tab to the Lucky Wheel
+      // 2. Transition view to the wheel in this tab
       document.getElementById('screenEntry').classList.add('hidden');
       document.getElementById('screenWheel').classList.remove('hidden');
 
-      // 3. Check Google Sheets duplicate in the background
+      // 3. Verify against Google Sheets database in the background
       try {
         const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}`);
         const data = await response.json();
 
         if (data.exists) {
-          // If already claimed, close the opened map and show blocked screen
-          if (mapsWindow) mapsWindow.close();
+          if (reviewWindow) reviewWindow.close();
           document.getElementById('screenWheel').classList.add('hidden');
           document.getElementById('blockedNumber').textContent = currentPhone;
           document.getElementById('screenBlocked').classList.remove('hidden');
@@ -272,11 +271,11 @@
       const wonPrize = PRIZES[selectedPrizeIndex].text;
       const token = "#JBM-" + Math.floor(1000 + Math.random() * 9000);
 
-      // Save directly to your Google Sheet
+      // Save directly into your Google Sheet
       fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize)}&token=${encodeURIComponent(token)}`)
         .catch(err => console.error("Error logging to Google Sheet:", err));
 
-      // Display winning voucher
+      // Display voucher
       document.getElementById('rewardName').textContent = wonPrize;
       document.getElementById('rewardPhone').textContent = currentPhone;
       document.getElementById('tokenCode').textContent = token;
