@@ -124,9 +124,11 @@
   </div>
 
   <script>
-    // Live Google Apps Script API & Google Maps Link
+    // Live Google Apps Script Web App URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
-    const GOOGLE_MAPS_LINK = "https://www.google.com/maps/place/Jaibhajarang+Mobiles+Sales+and+Service/@18.4337739,79.1218837,17z/data=!4m6!3m5!1s0x3bccd91aa5398eb9:0xde16e64f2d90bef1!8m2!3d18.4337739!4d79.1218837";
+    
+    // Your exact Google Maps link
+    const GOOGLE_MAPS_LINK = "https://maps.app.goo.gl/nzR7dtVtwJVSxi4aA";
 
     const PRIZES = [
       { text: "Tempered Glass", color: "#f59e0b" },
@@ -189,7 +191,6 @@
     async function handleReviewAndProceed() {
       const phone = document.getElementById('userPhone').value.trim();
       const errorMsg = document.getElementById('errorMsg');
-      const submitBtn = document.getElementById('submitBtn');
 
       if (!/^[6-9]\d{9}$/.test(phone)) {
         errorMsg.textContent = "Please enter a valid 10-digit mobile number.";
@@ -199,33 +200,28 @@
       errorMsg.classList.add('hidden');
       currentPhone = phone;
 
-      // 1. Live Check against Google Sheet
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Checking records...";
+      // 1. Open Google Maps IMMEDIATELY on touch/click so phone popup blockers don't kill it
+      const mapsWindow = window.open(GOOGLE_MAPS_LINK, '_blank');
 
+      // 2. Switch this tab to the Lucky Wheel
+      document.getElementById('screenEntry').classList.add('hidden');
+      document.getElementById('screenWheel').classList.remove('hidden');
+
+      // 3. Check Google Sheets duplicate in the background
       try {
         const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}`);
         const data = await response.json();
 
         if (data.exists) {
-          document.getElementById('screenEntry').classList.add('hidden');
+          // If already claimed, close the opened map and show blocked screen
+          if (mapsWindow) mapsWindow.close();
+          document.getElementById('screenWheel').classList.add('hidden');
           document.getElementById('blockedNumber').textContent = currentPhone;
           document.getElementById('screenBlocked').classList.remove('hidden');
-          return;
         }
       } catch (err) {
-        console.warn("Google Sheet check warning, proceeding gracefully:", err);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Rate on Google Maps & Spin Wheel ➔";
+        console.warn("Background check note:", err);
       }
-
-      // 2. Open Google Maps in a new tab
-      window.open(GOOGLE_MAPS_LINK, '_blank');
-
-      // 3. Immediately show the Wheel in current tab
-      document.getElementById('screenEntry').classList.add('hidden');
-      document.getElementById('screenWheel').classList.remove('hidden');
     }
 
     function getRandomPrizeIndex() {
@@ -276,7 +272,7 @@
       const wonPrize = PRIZES[selectedPrizeIndex].text;
       const token = "#JBM-" + Math.floor(1000 + Math.random() * 9000);
 
-      // Save record to Google Sheet in the background
+      // Save directly to your Google Sheet
       fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize)}&token=${encodeURIComponent(token)}`)
         .catch(err => console.error("Error logging to Google Sheet:", err));
 
