@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Jaibhajarang Mobiles - Rate & Win</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #wheelCanvas {
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 font-sans antialiased selection:bg-amber-500 selection:text-black">
+
+  <div class="w-full max-w-sm my-auto">
+    
+    <!-- 1. PHONE NUMBER INPUT & MAPS REDIRECT -->
+    <div id="screenEntry" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-5">
+      <div class="w-16 h-16 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto text-3xl font-black">
+        🎁
+      </div>
+
+      <header class="space-y-1">
+        <h1 class="text-2xl font-black tracking-tight text-white">Jaibhajarang Mobiles</h1>
+        <p class="text-xs text-amber-400 font-bold uppercase tracking-wider">Rate Us on Google & Win a Gift 🎡</p>
+        <p class="text-[11px] text-slate-400 pt-1 leading-relaxed">
+          Drop your genuine review on Google Maps and spin the wheel to claim a free mobile accessory at the counter!
+        </p>
+      </header>
+
+      <div class="space-y-1.5 text-left pt-1">
+        <label for="userPhone" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          Mobile Number (For Bill & Gift Verification)
+        </label>
+        <div class="flex items-center bg-slate-950 border border-slate-800 rounded-2xl p-2.5 focus-within:border-amber-500 transition-colors">
+          <span class="text-slate-400 text-sm font-semibold px-2 border-r border-slate-800">+91</span>
+          <input 
+            type="tel" 
+            id="userPhone" 
+            name="tel"
+            autocomplete="tel-national" 
+            inputmode="numeric" 
+            maxlength="10" 
+            placeholder="Tap to autofill or type" 
+            class="w-full bg-transparent px-3 text-sm text-white focus:outline-none font-mono"
+          />
+        </div>
+        <p class="text-[10px] text-slate-500">Your gift voucher will be linked to this number.</p>
+        <p id="errorMsg" class="text-rose-400 text-xs hidden"></p>
+      </div>
+
+      <button id="submitBtn" onclick="handleReviewAndProceed()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 py-3.5 rounded-2xl text-slate-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all">
+        Rate on Google Maps & Spin Wheel ➔
+      </button>
+
+      <p class="text-[10px] text-slate-500">1 review reward per customer / bill.</p>
+    </div>
+
+    <!-- 2. LUCKY WHEEL SCREEN -->
+    <div id="screenWheel" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-4 hidden">
+      <header class="space-y-0.5">
+        <div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-lg font-bold mb-1">
+          ✓
+        </div>
+        <h2 class="text-xl font-black text-white">Google Maps Opened!</h2>
+        <p class="text-[11px] text-amber-400 font-semibold">Post your review & spin to unlock your gift</p>
+      </header>
+
+      <div class="relative w-64 h-64 mx-auto my-2 flex items-center justify-center">
+        <!-- Pointer Needle at Top -->
+        <div class="absolute -top-3 z-20 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[22px] border-t-amber-400 filter drop-shadow"></div>
+        <canvas id="wheelCanvas" width="260" height="260" class="rounded-full"></canvas>
+      </div>
+
+      <button id="spinBtn" onclick="spinWheel()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black py-3.5 rounded-2xl text-sm tracking-wide shadow-lg shadow-amber-500/25 active:scale-[0.98] transition-all">
+        SPIN NOW 🎯
+      </button>
+    </div>
+
+    <!-- 3. WINNING VOUCHER SCREEN -->
+    <div id="screenReward" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-5 hidden">
+      <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-3xl font-bold">
+        🎉
+      </div>
+
+      <header class="space-y-1">
+        <h2 class="text-2xl font-black text-white">Congratulations!</h2>
+        <p class="text-xs text-slate-400">You won a free accessory:</p>
+      </header>
+
+      <div class="bg-slate-950 border border-amber-500/40 rounded-2xl p-4 space-y-1">
+        <p id="rewardName" class="text-xl font-black text-amber-400">Tempered Glass</p>
+        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">
+          Registered Mobile: <span id="rewardPhone" class="text-white font-bold"></span>
+        </p>
+        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">
+          Claim Token: <span id="tokenCode" class="text-white font-bold">#JBM-0000</span>
+        </p>
+      </div>
+
+      <div class="bg-slate-800/40 border border-slate-800 p-4 rounded-2xl text-left space-y-1.5">
+        <p class="text-xs font-bold text-white flex items-center gap-1.5">
+          <span>⚠️</span> How to claim at the counter:
+        </p>
+        <p class="text-[11px] text-slate-300 leading-relaxed">
+          Show this screen along with your posted Google Review to the counter technician to receive your free item immediately.
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. BLOCKED (ALREADY CLAIMED) SCREEN -->
+    <div id="screenBlocked" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-4 hidden">
+      <div class="w-14 h-14 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+        ✕
+      </div>
+      <h2 class="text-xl font-bold text-white">Reward Already Claimed</h2>
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Our records indicate this phone number (<span id="blockedNumber" class="font-mono text-white"></span>) has already received a review reward.
+      </p>
+      <p class="text-[11px] text-slate-500">Thank you for supporting Jaibhajarang Mobiles!</p>
+    </div>
+
+  </div>
+
+  <script>
+    // Live Google Apps Script API & Google Maps Link
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
+    const GOOGLE_MAPS_LINK = "https://www.google.com/maps/place/Jaibhajarang+Mobiles+Sales+and+Service/@18.4337739,79.1218837,17z/data=!4m6!3m5!1s0x3bccd91aa5398eb9:0xde16e64f2d90bef1!8m2!3d18.4337739!4d79.1218837";
+
+    const PRIZES = [
+      { text: "Tempered Glass", color: "#f59e0b" },
+      { text: "Fast USB Cable", color: "#3b82f6" },
+      { text: "Mobile Stand", color: "#10b981" },
+      { text: "₹50 Off Repair", color: "#8b5cf6" },
+      { text: "Wired Earphones", color: "#ec4899" },
+      { text: "OTG Connector", color: "#06b6d4" }
+    ];
+
+    let currentPhone = "";
+    let isSpinning = false;
+    let selectedPrizeIndex = null;
+
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    const numSlices = PRIZES.length;
+    const arcSize = (2 * Math.PI) / numSlices;
+    let startAngle = 0;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      drawWheel();
+    });
+
+    function drawWheel() {
+      const radius = canvas.width / 2;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < numSlices; i++) {
+        const angle = startAngle + i * arcSize;
+        ctx.fillStyle = PRIZES[i].color;
+
+        ctx.beginPath();
+        ctx.moveTo(radius, radius);
+        ctx.arc(radius, radius, radius, angle, angle + arcSize, false);
+        ctx.lineTo(radius, radius);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(radius, radius);
+        ctx.rotate(angle + arcSize / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 11px sans-serif";
+        ctx.fillText(PRIZES[i].text, radius - 15, 4);
+        ctx.restore();
+      }
+
+      // Center Hub
+      ctx.beginPath();
+      ctx.arc(radius, radius, 22, 0, 2 * Math.PI);
+      ctx.fillStyle = "#0f172a";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#f59e0b";
+      ctx.stroke();
+    }
+
+    async function handleReviewAndProceed() {
+      const phone = document.getElementById('userPhone').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        errorMsg.textContent = "Please enter a valid 10-digit mobile number.";
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+      errorMsg.classList.add('hidden');
+      currentPhone = phone;
+
+      // 1. Live Check against Google Sheet
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Checking records...";
+
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}`);
+        const data = await response.json();
+
+        if (data.exists) {
+          document.getElementById('screenEntry').classList.add('hidden');
+          document.getElementById('blockedNumber').textContent = currentPhone;
+          document.getElementById('screenBlocked').classList.remove('hidden');
+          return;
+        }
+      } catch (err) {
+        console.warn("Google Sheet check warning, proceeding gracefully:", err);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Rate on Google Maps & Spin Wheel ➔";
+      }
+
+      // 2. Open Google Maps in a new tab
+      window.open(GOOGLE_MAPS_LINK, '_blank');
+
+      // 3. Immediately show the Wheel in current tab
+      document.getElementById('screenEntry').classList.add('hidden');
+      document.getElementById('screenWheel').classList.remove('hidden');
+    }
+
+    function getRandomPrizeIndex() {
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      let newIndex = array[0] % numSlices;
+
+      const lastIndex = localStorage.getItem('jbmLastPrizeIndex');
+      if (lastIndex !== null && parseInt(lastIndex) === newIndex) {
+        newIndex = (newIndex + 1) % numSlices;
+      }
+      localStorage.setItem('jbmLastPrizeIndex', newIndex);
+      return newIndex;
+    }
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+      document.getElementById('spinBtn').disabled = true;
+
+      selectedPrizeIndex = getRandomPrizeIndex();
+
+      const extraSpins = 5 + Math.floor(Math.random() * 2);
+      const targetSliceOffset = (selectedPrizeIndex * arcSize) + (arcSize / 2);
+      const totalRotation = (extraSpins * 2 * Math.PI) + ((3 * Math.PI / 2) - targetSliceOffset);
+
+      const duration = 3500;
+      const startTime = performance.now();
+
+      function animate(time) {
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        startAngle = easeOut * totalRotation;
+        drawWheel();
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          isSpinning = false;
+          finishSpin();
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    function finishSpin() {
+      const wonPrize = PRIZES[selectedPrizeIndex].text;
+      const token = "#JBM-" + Math.floor(1000 + Math.random() * 9000);
+
+      // Save record to Google Sheet in the background
+      fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize)}&token=${encodeURIComponent(token)}`)
+        .catch(err => console.error("Error logging to Google Sheet:", err));
+
+      // Display winning voucher
+      document.getElementById('rewardName').textContent = wonPrize;
+      document.getElementById('rewardPhone').textContent = currentPhone;
+      document.getElementById('tokenCode').textContent = token;
+
+      document.getElementById('screenWheel').classList.add('hidden');
+      document.getElementById('screenReward').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
