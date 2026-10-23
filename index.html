@@ -23,7 +23,7 @@
   <div class="w-full max-w-sm my-auto">
     
     <!-- ======================================================== -->
-    <!-- SCREEN 1: PHONE NUMBER INPUT & REVIEW REDIRECT           -->
+    <!-- SCREEN 1: PHONE NUMBER INPUT                             -->
     <!-- ======================================================== -->
     <div id="screenEntry" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-5">
       <div class="w-16 h-16 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto text-3xl font-black">
@@ -67,7 +67,7 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 2: 7-SLICE LUCKY WHEEL                            -->
+    <!-- SCREEN 2: 7-SLICE LUCKY WHEEL WITH REAL PHOTOS           -->
     <!-- ======================================================== -->
     <div id="screenWheel" class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl text-center space-y-4 hidden">
       <header class="space-y-0.5">
@@ -78,7 +78,6 @@
         <p class="text-[11px] text-amber-400 font-semibold">Spin to win your counter accessory</p>
       </header>
 
-      <!-- Wheel Container -->
       <div class="relative w-64 h-64 mx-auto my-1 flex items-center justify-center">
         <!-- Pointer Needle at 12 O'Clock -->
         <div class="absolute -top-3.5 z-30 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[24px] border-t-amber-400 filter drop-shadow"></div>
@@ -102,17 +101,13 @@
         <p class="text-xs text-slate-300">You won this genuine in-store accessory:</p>
       </header>
 
-      <!-- Showcase Podium with Product Image -->
+      <!-- Showcase Podium -->
       <div class="prize-podium bg-gradient-to-b from-slate-950 to-slate-900 border border-amber-500/40 rounded-2xl p-4 flex flex-col items-center justify-center">
-        <!-- Rendered Clean Transparent Product Graphic -->
-        <div id="rewardImageContainer" class="w-28 h-28 flex items-center justify-center filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]">
-          <!-- Dynamic SVG injected here -->
+        <div class="w-28 h-28 flex items-center justify-center">
+          <img id="rewardImg" src="" alt="Won Prize" class="max-h-24 max-w-24 object-contain filter drop-shadow-xl" />
         </div>
-
-        <!-- Pedestal Base -->
         <div class="w-32 h-2.5 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600 rounded-full shadow-md mt-1 mb-2"></div>
-
-        <h3 id="rewardName" class="text-lg font-black text-amber-300 tracking-wide">Ear Phones</h3>
+        <h3 id="rewardName" class="text-lg font-black text-amber-300 tracking-wide"></h3>
         <p class="text-[10px] text-slate-400 font-medium">Exact item reserved for your token</p>
       </div>
 
@@ -139,17 +134,40 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 4: BLOCKED (ALREADY CLAIMED) SCREEN               -->
+    <!-- SCREEN 4: ALREADY CLAIMED SCREEN (FETCHES PREVIOUS GIFT) -->
     <!-- ======================================================== -->
-    <div id="screenBlocked" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-4 hidden">
-      <div class="w-14 h-14 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
-        ✕
+    <div id="screenBlocked" class="bg-slate-900 border border-rose-500/40 rounded-3xl p-5 shadow-2xl text-center space-y-4 hidden">
+      <header class="space-y-1">
+        <span class="inline-block px-3 py-0.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-full text-[10px] font-black uppercase tracking-widest">
+          ⚠️ Already Claimed
+        </span>
+        <h2 class="text-xl font-bold text-white pt-1">Reward Already Issued</h2>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Our records show this mobile number (<span id="blockedPhone" class="font-mono text-white font-bold"></span>) has already received their gift:
+        </p>
+      </header>
+
+      <!-- Displays Previous Won Item & Token -->
+      <div class="bg-gradient-to-b from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center">
+        <div class="w-24 h-24 flex items-center justify-center">
+          <img id="blockedImg" src="" alt="Claimed Item" class="max-h-20 max-w-20 object-contain filter drop-shadow-md grayscale-[30%]" />
+        </div>
+        <h3 id="blockedPrizeName" class="text-base font-black text-slate-200 mt-1"></h3>
+        <p id="blockedDate" class="text-[10px] text-slate-500 font-mono"></p>
       </div>
-      <h2 class="text-xl font-bold text-white">Reward Already Claimed</h2>
-      <p class="text-xs text-slate-400 leading-relaxed">
-        Our records indicate that phone number (<span id="blockedNumber" class="font-mono text-white"></span>) has already redeemed a review gift.
-      </p>
-      <p class="text-[11px] text-slate-500">Thank you for supporting JaiBhajarang Mobiles!</p>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-left space-y-1 font-mono text-[11px]">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 text-[10px]">ISSUED TOKEN:</span>
+          <span id="blockedToken" class="text-amber-400 font-black text-xs tracking-wider"></span>
+        </div>
+        <div class="flex justify-between items-center border-t border-slate-800/80 pt-1 mt-1">
+          <span class="text-slate-400 text-[10px]">STATUS:</span>
+          <span class="text-emerald-400 font-bold text-[10px]">REDEEMED AT COUNTER</span>
+        </div>
+      </div>
+
+      <p class="text-[10px] text-slate-500">Only 1 review gift is allowed per customer / bill.</p>
     </div>
 
   </div>
@@ -158,108 +176,49 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
     const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Jaibhajarang+Mobiles+Sales+and+Service+Karimnagar#lrd=0x3bccd91aa5398eb9:0xde16e64f2d90bef1,3";
 
-    // 7 Exact In-Store Counter Inventory Items with Transparent Background Visual SVGs
+    // 7 Exact Inventory Items with local filenames & clean online fallbacks
     const PRIZES = [
       { 
         text: "Ear Phones", 
         color: "#f59e0b",
-        icon: "🎧",
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
-                <rect x="20" y="10" width="60" height="80" rx="6" fill="#FBBF24" stroke="#D97706" stroke-width="2"/>
-                <circle cx="50" cy="45" r="24" fill="#F59E0B" opacity="0.4"/>
-                <circle cx="42" cy="42" r="7" fill="#1E293B"/>
-                <circle cx="58" cy="42" r="7" fill="#1E293B"/>
-                <rect x="40" y="47" width="4" height="15" rx="2" fill="#0F172A"/>
-                <rect x="56" y="47" width="4" height="15" rx="2" fill="#0F172A"/>
-                <path d="M42 62 Q50 78 50 82" stroke="#334155" stroke-width="2" fill="none"/>
-                <path d="M58 62 Q50 78 50 82" stroke="#334155" stroke-width="2" fill="none"/>
-                <text x="50" y="24" font-size="7" font-weight="900" fill="#78350F" text-anchor="middle">TOUCHTEK</text>
-                <text x="50" y="76" font-size="8" font-weight="900" fill="#B45309" text-anchor="middle">GABBAR</text>
-              </svg>`
+        image: "earphones.png",
+        fallback: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&auto=format&fit=crop&q=80"
       },
       { 
         text: "Charging Cable", 
         color: "#3b82f6",
-        icon: "⚡",
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
-                <!-- Coiled White Fast Cable -->
-                <ellipse cx="50" cy="55" rx="30" ry="24" fill="none" stroke="#E2E8F0" stroke-width="6"/>
-                <ellipse cx="50" cy="55" rx="24" ry="18" fill="none" stroke="#CBD5E1" stroke-width="5"/>
-                <!-- Cable Tie -->
-                <rect x="46" y="32" width="8" height="46" rx="2" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1"/>
-                <!-- USB Heads -->
-                <rect x="42" y="14" width="7" height="18" rx="2" fill="#F8FAFC" stroke="#64748B" stroke-width="1.5"/>
-                <rect x="51" y="10" width="7" height="22" rx="2" fill="#F8FAFC" stroke="#64748B" stroke-width="1.5"/>
-                <rect x="52" y="6" width="5" height="4" fill="#E2E8F0"/>
-              </svg>`
+        image: "cable.png",
+        fallback: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=200&auto=format&fit=crop&q=80"
       },
       { 
         text: "PUBG Fingers", 
         color: "#10b981",
-        icon: "🕹️",
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
-                <!-- Packaging Pouch -->
-                <rect x="20" y="12" width="60" height="76" rx="6" fill="#0F172A" stroke="#334155" stroke-width="2"/>
-                <text x="50" y="26" font-size="7" font-weight="900" fill="#EAB308" text-anchor="middle">WASP FEELERS</text>
-                <!-- Black Finger Sleeve with Blue/Silver rim -->
-                <rect x="35" y="40" width="30" height="34" rx="15" fill="#1E293B" stroke="#0284C7" stroke-width="2.5"/>
-                <line x1="37" y1="72" x2="63" y2="72" stroke="#38BDF8" stroke-width="2.5"/>
-                <ellipse cx="50" cy="52" rx="10" ry="8" fill="#334155" opacity="0.6"/>
-              </svg>`
+        image: "pubg-fingers.png",
+        fallback: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=200&auto=format&fit=crop&q=80"
       },
       { 
         text: "Mobile Stand", 
         color: "#8b5cf6",
-        icon: "📱",
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
-                <!-- Green Foldable Mobile Stand -->
-                <rect x="25" y="18" width="50" height="64" rx="8" fill="#84CC16" stroke="#4D7C0F" stroke-width="2"/>
-                <rect x="38" y="28" width="24" height="36" rx="4" fill="#365314" opacity="0.3"/>
-                <!-- Made In India Stars -->
-                <text x="50" y="25" font-size="5" font-weight="bold" fill="#F7FEE7" text-anchor="middle">★ MADE IN INDIA ★</text>
-                <!-- Holding hooks -->
-                <path d="M22 74 C22 84 32 84 35 84 L65 84 C68 84 78 84 78 74" fill="none" stroke="#4D7C0F" stroke-width="5" stroke-linecap="round"/>
-              </svg>`
+        image: "stand.png",
+        fallback: "https://images.unsplash.com/photo-1586105251261-72a756497a11?w=200&auto=format&fit=crop&q=80"
       },
       { 
         text: "Mobile Rain Cover", 
         color: "#ec4899",
-        icon: "🌧️",
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
-                <!-- Neon Green Waterproof Pouch -->
-                <rect x="28" y="24" width="44" height="66" rx="6" fill="#A3E635" fill-opacity="0.3" stroke="#84CC16" stroke-width="2.5"/>
-                <!-- Triple Zip Lock Header -->
-                <rect x="24" y="18" width="52" height="10" rx="3" fill="#84CC16" stroke="#4D7C0F" stroke-width="1.5"/>
-                <!-- Green Cord Lanyard -->
-                <path d="M35 18 C35 5, 65 5, 65 18" fill="none" stroke="#65A30D" stroke-width="3" stroke-dasharray="2,2"/>
-              </svg>`
+        image: "rain-cover.png",
+        fallback: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=200&auto=format&fit=crop&q=80"
       },
       { 
         text: "Screen Guard", 
         color: "#06b6d4",
-        icon: "🛡️",
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
-                <!-- Tempered Glass Screen Guard -->
-                <rect x="30" y="12" width="40" height="76" rx="7" fill="#082F49" fill-opacity="0.2" stroke="#0284C7" stroke-width="2"/>
-                <rect x="32" y="14" width="36" height="72" rx="5" fill="none" stroke="#38BDF8" stroke-width="1.5"/>
-                <!-- Speaker Notch -->
-                <rect x="45" y="17" width="10" height="2" rx="1" fill="#38BDF8"/>
-                <!-- Gloss sheen -->
-                <line x1="34" y1="78" x2="62" y2="22" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
-              </svg>`
+        image: "screen-guard.png",
+        fallback: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=200&auto=format&fit=crop&q=80"
       },
       { 
         text: "OTG Connector", 
         color: "#f97316",
-        icon: "⚙️",
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
-                <!-- Anodized Blue Metallic OTG -->
-                <rect x="34" y="38" width="32" height="42" rx="3" fill="#0284C7" stroke="#0369A1" stroke-width="2"/>
-                <!-- Type-C Metal Tip -->
-                <rect x="42" y="20" width="16" height="18" rx="4" fill="#94A3B8" stroke="#64748B" stroke-width="1.5"/>
-                <rect x="40" y="36" width="20" height="4" rx="1" fill="#0F172A"/>
-                <line x1="42" y1="46" x2="42" y2="72" stroke="#38BDF8" stroke-width="2"/>
-              </svg>`
+        image: "otg.png",
+        fallback: "https://images.unsplash.com/photo-1618758872242-2d85fdf264e1?w=200&auto=format&fit=crop&q=80"
       }
     ];
 
@@ -269,9 +228,24 @@
 
     const canvas = document.getElementById("wheelCanvas");
     const ctx = canvas.getContext("2d");
-    const numSlices = PRIZES.length; // Exactly 7 slices
+    const numSlices = PRIZES.length;
     const arcSize = (2 * Math.PI) / numSlices;
     let startAngle = 0;
+
+    // Preload all product images into memory
+    PRIZES.forEach((p) => {
+      const img = new Image();
+      img.src = p.image;
+      img.onload = () => {
+        p.imgObj = img;
+        drawWheel();
+      };
+      img.onerror = () => {
+        img.src = p.fallback;
+        p.imgObj = img;
+        drawWheel();
+      };
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
       drawWheel();
@@ -291,21 +265,34 @@
         ctx.lineTo(radius, radius);
         ctx.fill();
 
-        // Slice dividing lines
         ctx.lineWidth = 1.5;
         ctx.strokeStyle = "#0f172a";
         ctx.stroke();
 
-        // Slice Text & Icon
         ctx.save();
         ctx.translate(radius, radius);
         ctx.rotate(angle + arcSize / 2);
+
+        // Draw Product Label
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 10px sans-serif";
+        ctx.font = "bold 9.5px sans-serif";
         ctx.shadowColor = "rgba(0,0,0,0.8)";
         ctx.shadowBlur = 4;
-        ctx.fillText(`${PRIZES[i].text} ${PRIZES[i].icon}`, radius - 16, 4);
+        ctx.fillText(PRIZES[i].text, radius - 8, -6);
+
+        // Draw Real Product Photo directly on Wheel slice
+        if (PRIZES[i].imgObj && PRIZES[i].imgObj.complete) {
+          try {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(radius - 36, 12, 14, 0, 2 * Math.PI);
+            ctx.clip();
+            ctx.drawImage(PRIZES[i].imgObj, radius - 50, -2, 28, 28);
+            ctx.restore();
+          } catch(e) {}
+        }
+
         ctx.restore();
       }
 
@@ -319,7 +306,6 @@
       ctx.strokeStyle = "#f59e0b";
       ctx.stroke();
 
-      // Center Star Icon
       ctx.fillStyle = "#fbbf24";
       ctx.font = "14px sans-serif";
       ctx.textAlign = "center";
@@ -331,6 +317,7 @@
     async function handleReviewAndProceed() {
       const phone = document.getElementById('userPhone').value.trim();
       const errorMsg = document.getElementById('errorMsg');
+      const submitBtn = document.getElementById('submitBtn');
 
       if (!/^[6-9]\d{9}$/.test(phone)) {
         errorMsg.textContent = "Please enter a valid 10-digit mobile number.";
@@ -340,27 +327,54 @@
       errorMsg.classList.add('hidden');
       currentPhone = phone;
 
-      // 1. Immediately launch Google Review to bypass mobile popup blockers
-      const reviewWindow = window.open(GOOGLE_REVIEW_URL, '_blank');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Checking records...";
 
-      // 2. Transition view to the wheel in this tab
-      document.getElementById('screenEntry').classList.add('hidden');
-      document.getElementById('screenWheel').classList.remove('hidden');
-
-      // 3. Verify against Google Sheets database in the background
+      // Check database to see if phone already claimed
       try {
         const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}`);
         const data = await response.json();
 
         if (data.exists) {
-          if (reviewWindow) reviewWindow.close();
-          document.getElementById('screenWheel').classList.add('hidden');
-          document.getElementById('blockedNumber').textContent = currentPhone;
-          document.getElementById('screenBlocked').classList.remove('hidden');
+          // Display the item & token they previously won
+          showAlreadyClaimedScreen(data);
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
+          return;
         }
       } catch (err) {
-        console.warn("Background check note:", err);
+        console.warn("Database check notice:", err);
       }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
+
+      // 1. Open Google Review modal
+      window.open(GOOGLE_REVIEW_URL, '_blank');
+
+      // 2. Open Wheel Screen
+      document.getElementById('screenEntry').classList.add('hidden');
+      document.getElementById('screenWheel').classList.remove('hidden');
+    }
+
+    function showAlreadyClaimedScreen(data) {
+      document.getElementById('screenEntry').classList.add('hidden');
+      document.getElementById('blockedPhone').textContent = data.phone || currentPhone;
+      document.getElementById('blockedPrizeName').textContent = data.prize || "In-store Accessory";
+      document.getElementById('blockedToken').textContent = data.token || "#JBM-CLAIMED";
+      document.getElementById('blockedDate').textContent = data.date ? `Redeemed on: ${data.date}` : "";
+
+      // Find image matching the won prize
+      const matched = PRIZES.find(p => p.text.toLowerCase().trim() === (data.prize || "").toLowerCase().trim());
+      const imgElem = document.getElementById('blockedImg');
+      if (matched) {
+        imgElem.src = matched.image;
+        imgElem.onerror = () => { imgElem.src = matched.fallback; };
+      } else {
+        imgElem.src = PRIZES[0].fallback;
+      }
+
+      document.getElementById('screenBlocked').classList.remove('hidden');
     }
 
     function getRandomPrizeIndex() {
@@ -385,8 +399,6 @@
 
       const extraSpins = 5 + Math.floor(Math.random() * 2);
       const targetSliceOffset = (selectedPrizeIndex * arcSize) + (arcSize / 2);
-      
-      // Pointer is at the top (3 * PI / 2)
       const totalRotation = (extraSpins * 2 * Math.PI) + ((3 * Math.PI / 2) - targetSliceOffset);
 
       const duration = 3600;
@@ -413,12 +425,15 @@
       const wonPrize = PRIZES[selectedPrizeIndex];
       const token = "#JBM-" + Math.floor(1000 + Math.random() * 9000);
 
-      // Save directly into your Google Sheet
+      // Save directly into Google Sheet
       fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize.text)}&token=${encodeURIComponent(token)}`)
         .catch(err => console.error("Error logging to Google Sheet:", err));
 
-      // Populate Winning Voucher with genuine product artwork
-      document.getElementById('rewardImageContainer').innerHTML = wonPrize.svg;
+      // Display real photo & voucher
+      const rewardImg = document.getElementById('rewardImg');
+      rewardImg.src = wonPrize.image;
+      rewardImg.onerror = () => { rewardImg.src = wonPrize.fallback; };
+
       document.getElementById('rewardName').textContent = wonPrize.text;
       document.getElementById('rewardPhone').textContent = currentPhone;
       document.getElementById('tokenCode').textContent = token;
