@@ -164,15 +164,16 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
     const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Jaibhajarang+Mobiles+Sales+and+Service+Karimnagar#lrd=0x3bccd91aa5398eb9:0xde16e64f2d90bef1,3";
 
+    // Matches the exact .png.png file names in your GitHub repo
     const PRIZES = [
-      { text: "Ear Phones", color: "#f59e0b", image: "earphones.png" },
-      { text: "Charging Cable", color: "#3b82f6", image: "cable.png" },
-      { text: "PUBG Fingers", color: "#10b981", image: "pubg-fingers.png" },
-      { text: "Mobile Stand", color: "#8b5cf6", image: "stand.png" },
-      { text: "Mobile Rain Cover", color: "#ec4899", image: "rain-cover.png" },
-      { text: "Cable Protector", color: "#eab308", image: "cable-protector.png" },
-      { text: "Screen Guard", color: "#06b6d4", image: "screen-guard.png" },
-      { text: "OTG Connector", color: "#f97316", image: "otg.png" }
+      { text: "Ear Phones", color: "#f59e0b", image: "earphones.png.png" },
+      { text: "Charging Cable", color: "#3b82f6", image: "cable.png.png" },
+      { text: "PUBG Fingers", color: "#10b981", image: "pubg-fingers.png.png" },
+      { text: "Mobile Stand", color: "#8b5cf6", image: "stand.png.png" },
+      { text: "Mobile Rain Cover", color: "#ec4899", image: "rain-cover.png.png" },
+      { text: "Cable Protector", color: "#eab308", image: "cable-protector.png.png" },
+      { text: "Screen Guard", color: "#06b6d4", image: "screen-guard.png.png" },
+      { text: "OTG Connector", color: "#f97316", image: "otg.png.png" }
     ];
 
     let currentPhone = "";
@@ -185,7 +186,6 @@
     const arcSize = (2 * Math.PI) / numSlices;
     let startAngle = 0;
 
-    // Load images without delaying page load
     PRIZES.forEach((p) => {
       const img = new Image();
       img.src = p.image;
@@ -272,7 +272,7 @@
       errorMsg.classList.add('hidden');
       currentPhone = phoneInput;
 
-      // 1. INSTANT 0ms Check (Local cache for lightning speed)
+      // Check local cache
       const cached = localStorage.getItem('jbm_claim_' + currentPhone);
       if (cached) {
         try {
@@ -284,7 +284,6 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "Verifying Number...";
 
-      // 2. Network Check with a 4-second timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
 
@@ -300,7 +299,7 @@
           showAlreadyClaimedScreen(data);
           submitBtn.disabled = false;
           submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
-          return; // STOPS HERE. NEVER shows wheel for existing numbers!
+          return;
         }
       } catch (err) {
         clearTimeout(timeoutId);
@@ -310,7 +309,7 @@
       submitBtn.disabled = false;
       submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
 
-      // 3. New user validated: Launch Review and Show Wheel
+      // New number: open review and wheel
       window.open(GOOGLE_REVIEW_URL, '_blank');
       document.getElementById('screenEntry').classList.add('hidden');
       document.getElementById('screenWheel').classList.remove('hidden');
@@ -327,7 +326,7 @@
       const prizeName = (data.prize || "").toLowerCase().trim();
       const matched = PRIZES.find(p => prizeName.includes(p.text.toLowerCase().trim()) || p.text.toLowerCase().includes(prizeName));
       const imgElem = document.getElementById('blockedImg');
-      imgElem.src = matched ? matched.image : "earphones.png";
+      imgElem.src = matched ? matched.image : "earphones.png.png";
 
       document.getElementById('screenBlocked').classList.remove('hidden');
     }
@@ -384,7 +383,7 @@
       fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize.text)}&token=${encodeURIComponent(token)}`)
         .catch(err => console.error(err));
 
-      // Save locally to block repeated spins instantly
+      // Cache locally to block repeated spins
       localStorage.setItem('jbm_claim_' + currentPhone, JSON.stringify({
         exists: true,
         phone: currentPhone,
