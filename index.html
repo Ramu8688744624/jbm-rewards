@@ -164,7 +164,6 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
     const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Jaibhajarang+Mobiles+Sales+and+Service+Karimnagar#lrd=0x3bccd91aa5398eb9:0xde16e64f2d90bef1,3";
 
-    // Maps directly to the actual filenames in your repo
     const PRIZES = [
       { text: "Ear Phones", color: "#f59e0b", image: "earphones.png.png" },
       { text: "Charging Cable", color: "#3b82f6", image: "cable.png.png" },
@@ -176,7 +175,6 @@
       { text: "OTG Connector", color: "#f97316", image: "otg.png.png" }
     ];
 
-    // Smart Resolver: Maps any historical sheet prize name to the right image
     function getPrizeImage(prizeName) {
       const str = String(prizeName || "").toLowerCase().trim();
       if (str.includes("glass") || str.includes("tempered") || str.includes("screen") || str.includes("11d")) {
@@ -217,7 +215,6 @@
     const arcSize = (2 * Math.PI) / numSlices;
     let startAngle = 0;
 
-    // Preload images into memory
     PRIZES.forEach((p) => {
       const img = new Image();
       img.src = p.image;
@@ -305,44 +302,31 @@
       currentPhone = phoneInput;
       hasRecordedWinner = false;
 
-      // 1. Instant check in local storage cache
-      const cached = localStorage.getItem('jbm_claim_' + currentPhone);
-      if (cached) {
-        try {
-          showAlreadyClaimedScreen(JSON.parse(cached));
-          return;
-        } catch(e) {}
-      }
-
       submitBtn.disabled = true;
-      submitBtn.textContent = "Verifying Number...";
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      submitBtn.textContent = "Checking records...";
 
       try {
-        const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}`, {
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
+        // Cache-busting timestamp ensures live check directly against Google Sheets
+        const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}&_t=${Date.now()}`);
         const data = await response.json();
 
         if (data.exists) {
-          localStorage.setItem('jbm_claim_' + currentPhone, JSON.stringify(data));
           showAlreadyClaimedScreen(data);
           submitBtn.disabled = false;
           submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
           return;
+        } else {
+          // If deleted from Google Sheet, purge any local cache so it allows the spin
+          localStorage.removeItem('jbm_claim_' + currentPhone);
         }
       } catch (err) {
-        clearTimeout(timeoutId);
-        console.warn("Server check note:", err);
+        console.warn("Live check notice:", err);
       }
 
       submitBtn.disabled = false;
       submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
 
-      // Open Google Review modal and show wheel
+      // Open Google Review and proceed to wheel
       window.open(GOOGLE_REVIEW_URL, '_blank');
       document.getElementById('screenEntry').classList.add('hidden');
       document.getElementById('screenWheel').classList.remove('hidden');
@@ -356,7 +340,6 @@
       document.getElementById('blockedToken').textContent = data.token || "#JBM-CLAIMED";
       document.getElementById('blockedDate').textContent = data.date ? `Redeemed on: ${data.date}` : "";
 
-      // Smart resolver matches both old ("Fast USB Cable", "Tempered Glass") & new names
       const imgElem = document.getElementById('blockedImg');
       imgElem.src = getPrizeImage(data.prize);
 
@@ -408,26 +391,17 @@
     }
 
     function finishSpin() {
-      if (hasRecordedWinner) return; // Hard lock prevents duplicate submissions
+      if (hasRecordedWinner) return;
       hasRecordedWinner = true;
 
       const wonPrize = PRIZES[selectedPrizeIndex];
       const token = "#JBM-" + Math.floor(1000 + Math.random() * 9000);
 
-      // Save to Google Sheet
+      // Save directly into Google Sheet
       fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize.text)}&token=${encodeURIComponent(token)}`)
         .catch(err => console.error(err));
 
-      // Cache locally to instantly block on this browser
-      localStorage.setItem('jbm_claim_' + currentPhone, JSON.stringify({
-        exists: true,
-        phone: currentPhone,
-        prize: wonPrize.text,
-        token: token,
-        date: new Date().toLocaleDateString('en-IN')
-      }));
-
-      // Render podium with the exact winning photo
+      // Update Winner Podium
       document.getElementById('rewardImg').src = wonPrize.image;
       document.getElementById('rewardName').textContent = wonPrize.text;
       document.getElementById('rewardPhone').textContent = currentPhone;
