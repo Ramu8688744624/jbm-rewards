@@ -164,7 +164,7 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
     const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Jaibhajarang+Mobiles+Sales+and+Service+Karimnagar#lrd=0x3bccd91aa5398eb9:0xde16e64f2d90bef1,3";
 
-    // Matches the exact .png.png file names in your GitHub repo
+    // Maps directly to the actual filenames in your repo
     const PRIZES = [
       { text: "Ear Phones", color: "#f59e0b", image: "earphones.png.png" },
       { text: "Charging Cable", color: "#3b82f6", image: "cable.png.png" },
@@ -176,8 +176,39 @@
       { text: "OTG Connector", color: "#f97316", image: "otg.png.png" }
     ];
 
+    // Smart Resolver: Maps any historical sheet prize name to the right image
+    function getPrizeImage(prizeName) {
+      const str = String(prizeName || "").toLowerCase().trim();
+      if (str.includes("glass") || str.includes("tempered") || str.includes("screen") || str.includes("11d")) {
+        return "screen-guard.png.png";
+      }
+      if (str.includes("cable protector") || (str.includes("protector") && !str.includes("screen"))) {
+        return "cable-protector.png.png";
+      }
+      if (str.includes("cable") || str.includes("charging") || str.includes("usb")) {
+        return "cable.png.png";
+      }
+      if (str.includes("pubg") || str.includes("finger") || str.includes("sleeve")) {
+        return "pubg-fingers.png.png";
+      }
+      if (str.includes("stand") || str.includes("holder")) {
+        return "stand.png.png";
+      }
+      if (str.includes("rain") || str.includes("waterproof") || str.includes("cover") || str.includes("pouch")) {
+        return "rain-cover.png.png";
+      }
+      if (str.includes("otg")) {
+        return "otg.png.png";
+      }
+      if (str.includes("ear") || str.includes("headphone") || str.includes("touchtek")) {
+        return "earphones.png.png";
+      }
+      return "earphones.png.png";
+    }
+
     let currentPhone = "";
     let isSpinning = false;
+    let hasRecordedWinner = false;
     let selectedPrizeIndex = 0;
 
     const canvas = document.getElementById("wheelCanvas");
@@ -186,6 +217,7 @@
     const arcSize = (2 * Math.PI) / numSlices;
     let startAngle = 0;
 
+    // Preload images into memory
     PRIZES.forEach((p) => {
       const img = new Image();
       img.src = p.image;
@@ -271,8 +303,9 @@
       }
       errorMsg.classList.add('hidden');
       currentPhone = phoneInput;
+      hasRecordedWinner = false;
 
-      // Check local cache
+      // 1. Instant check in local storage cache
       const cached = localStorage.getItem('jbm_claim_' + currentPhone);
       if (cached) {
         try {
@@ -309,7 +342,7 @@
       submitBtn.disabled = false;
       submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
 
-      // New number: open review and wheel
+      // Open Google Review modal and show wheel
       window.open(GOOGLE_REVIEW_URL, '_blank');
       document.getElementById('screenEntry').classList.add('hidden');
       document.getElementById('screenWheel').classList.remove('hidden');
@@ -323,10 +356,9 @@
       document.getElementById('blockedToken').textContent = data.token || "#JBM-CLAIMED";
       document.getElementById('blockedDate').textContent = data.date ? `Redeemed on: ${data.date}` : "";
 
-      const prizeName = (data.prize || "").toLowerCase().trim();
-      const matched = PRIZES.find(p => prizeName.includes(p.text.toLowerCase().trim()) || p.text.toLowerCase().includes(prizeName));
+      // Smart resolver matches both old ("Fast USB Cable", "Tempered Glass") & new names
       const imgElem = document.getElementById('blockedImg');
-      imgElem.src = matched ? matched.image : "earphones.png.png";
+      imgElem.src = getPrizeImage(data.prize);
 
       document.getElementById('screenBlocked').classList.remove('hidden');
     }
@@ -376,6 +408,9 @@
     }
 
     function finishSpin() {
+      if (hasRecordedWinner) return; // Hard lock prevents duplicate submissions
+      hasRecordedWinner = true;
+
       const wonPrize = PRIZES[selectedPrizeIndex];
       const token = "#JBM-" + Math.floor(1000 + Math.random() * 9000);
 
@@ -383,7 +418,7 @@
       fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize.text)}&token=${encodeURIComponent(token)}`)
         .catch(err => console.error(err));
 
-      // Cache locally to block repeated spins
+      // Cache locally to instantly block on this browser
       localStorage.setItem('jbm_claim_' + currentPhone, JSON.stringify({
         exists: true,
         phone: currentPhone,
@@ -392,7 +427,7 @@
         date: new Date().toLocaleDateString('en-IN')
       }));
 
-      // Render podium
+      // Render podium with the exact winning photo
       document.getElementById('rewardImg').src = wonPrize.image;
       document.getElementById('rewardName').textContent = wonPrize.text;
       document.getElementById('rewardPhone').textContent = currentPhone;
