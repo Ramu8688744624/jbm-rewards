@@ -22,9 +22,7 @@
 
   <div class="w-full max-w-sm my-auto">
     
-    <!-- ======================================================== -->
-    <!-- SCREEN 1: PHONE NUMBER INPUT                             -->
-    <!-- ======================================================== -->
+    <!-- 1. PHONE NUMBER INPUT -->
     <div id="screenEntry" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center space-y-5">
       <div class="w-16 h-16 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto text-3xl font-black">
         🎁
@@ -66,9 +64,7 @@
       <p class="text-[10px] text-slate-500">1 review reward per customer / bill.</p>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- SCREEN 2: 7-SLICE LUCKY WHEEL WITH REAL PHOTOS           -->
-    <!-- ======================================================== -->
+    <!-- 2. 8-SLICE LUCKY WHEEL -->
     <div id="screenWheel" class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl text-center space-y-4 hidden">
       <header class="space-y-0.5">
         <div class="w-8 h-8 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-sm font-bold">
@@ -79,7 +75,6 @@
       </header>
 
       <div class="relative w-64 h-64 mx-auto my-1 flex items-center justify-center">
-        <!-- Pointer Needle at 12 O'Clock -->
         <div class="absolute -top-3.5 z-30 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[24px] border-t-amber-400 filter drop-shadow"></div>
         <canvas id="wheelCanvas" width="260" height="260" class="rounded-full"></canvas>
       </div>
@@ -89,9 +84,7 @@
       </button>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- SCREEN 3: WINNING SHOWCASE PODIUM (EXACT ITEM IMAGE)     -->
-    <!-- ======================================================== -->
+    <!-- 3. WINNING SHOWCASE PODIUM -->
     <div id="screenReward" class="bg-slate-900 border border-amber-500/30 rounded-3xl p-5 shadow-2xl text-center space-y-4 hidden">
       <header class="space-y-0.5">
         <span class="inline-block px-3 py-0.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full text-[10px] font-black uppercase tracking-widest">
@@ -101,17 +94,15 @@
         <p class="text-xs text-slate-300">You won this genuine in-store accessory:</p>
       </header>
 
-      <!-- Showcase Podium -->
       <div class="prize-podium bg-gradient-to-b from-slate-950 to-slate-900 border border-amber-500/40 rounded-2xl p-4 flex flex-col items-center justify-center">
         <div class="w-28 h-28 flex items-center justify-center">
-          <img id="rewardImg" src="" alt="Won Prize" class="max-h-24 max-w-24 object-contain filter drop-shadow-xl" />
+          <img id="rewardImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Won Prize" class="max-h-24 max-w-24 object-contain filter drop-shadow-xl" />
         </div>
         <div class="w-32 h-2.5 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600 rounded-full shadow-md mt-1 mb-2"></div>
         <h3 id="rewardName" class="text-lg font-black text-amber-300 tracking-wide"></h3>
         <p class="text-[10px] text-slate-400 font-medium">Exact item reserved for your token</p>
       </div>
 
-      <!-- Verification Voucher Details -->
       <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-left space-y-1 font-mono text-[11px]">
         <div class="flex justify-between items-center border-b border-slate-800/80 pb-1.5">
           <span class="text-slate-400 text-[10px]">CLAIM TOKEN:</span>
@@ -133,9 +124,7 @@
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- SCREEN 4: ALREADY CLAIMED SCREEN (FETCHES PREVIOUS GIFT) -->
-    <!-- ======================================================== -->
+    <!-- 4. ALREADY CLAIMED SCREEN -->
     <div id="screenBlocked" class="bg-slate-900 border border-rose-500/40 rounded-3xl p-5 shadow-2xl text-center space-y-4 hidden">
       <header class="space-y-1">
         <span class="inline-block px-3 py-0.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-full text-[10px] font-black uppercase tracking-widest">
@@ -147,10 +136,9 @@
         </p>
       </header>
 
-      <!-- Displays Previous Won Item & Token -->
       <div class="bg-gradient-to-b from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center">
         <div class="w-24 h-24 flex items-center justify-center">
-          <img id="blockedImg" src="" alt="Claimed Item" class="max-h-20 max-w-20 object-contain filter drop-shadow-md grayscale-[30%]" />
+          <img id="blockedImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Claimed Item" class="max-h-20 max-w-20 object-contain filter drop-shadow-md" />
         </div>
         <h3 id="blockedPrizeName" class="text-base font-black text-slate-200 mt-1"></h3>
         <p id="blockedDate" class="text-[10px] text-slate-500 font-mono"></p>
@@ -176,50 +164,15 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1aw2n5b2B0wEEt1nyvUfO-SSsnERvyRaClJPTmJq84gJPEh3sYOXSVJVNzlc2nYBqpA/exec";
     const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=Jaibhajarang+Mobiles+Sales+and+Service+Karimnagar#lrd=0x3bccd91aa5398eb9:0xde16e64f2d90bef1,3";
 
-    // 7 Exact Inventory Items with local filenames & clean online fallbacks
     const PRIZES = [
-      { 
-        text: "Ear Phones", 
-        color: "#f59e0b",
-        image: "earphones.png",
-        fallback: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&auto=format&fit=crop&q=80"
-      },
-      { 
-        text: "Charging Cable", 
-        color: "#3b82f6",
-        image: "cable.png",
-        fallback: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=200&auto=format&fit=crop&q=80"
-      },
-      { 
-        text: "PUBG Fingers", 
-        color: "#10b981",
-        image: "pubg-fingers.png",
-        fallback: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=200&auto=format&fit=crop&q=80"
-      },
-      { 
-        text: "Mobile Stand", 
-        color: "#8b5cf6",
-        image: "stand.png",
-        fallback: "https://images.unsplash.com/photo-1586105251261-72a756497a11?w=200&auto=format&fit=crop&q=80"
-      },
-      { 
-        text: "Mobile Rain Cover", 
-        color: "#ec4899",
-        image: "rain-cover.png",
-        fallback: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=200&auto=format&fit=crop&q=80"
-      },
-      { 
-        text: "Screen Guard", 
-        color: "#06b6d4",
-        image: "screen-guard.png",
-        fallback: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=200&auto=format&fit=crop&q=80"
-      },
-      { 
-        text: "OTG Connector", 
-        color: "#f97316",
-        image: "otg.png",
-        fallback: "https://images.unsplash.com/photo-1618758872242-2d85fdf264e1?w=200&auto=format&fit=crop&q=80"
-      }
+      { text: "Ear Phones", color: "#f59e0b", image: "earphones.png" },
+      { text: "Charging Cable", color: "#3b82f6", image: "cable.png" },
+      { text: "PUBG Fingers", color: "#10b981", image: "pubg-fingers.png" },
+      { text: "Mobile Stand", color: "#8b5cf6", image: "stand.png" },
+      { text: "Mobile Rain Cover", color: "#ec4899", image: "rain-cover.png" },
+      { text: "Cable Protector", color: "#eab308", image: "cable-protector.png" },
+      { text: "Screen Guard", color: "#06b6d4", image: "screen-guard.png" },
+      { text: "OTG Connector", color: "#f97316", image: "otg.png" }
     ];
 
     let currentPhone = "";
@@ -232,16 +185,11 @@
     const arcSize = (2 * Math.PI) / numSlices;
     let startAngle = 0;
 
-    // Preload all product images into memory
+    // Load images without delaying page load
     PRIZES.forEach((p) => {
       const img = new Image();
       img.src = p.image;
       img.onload = () => {
-        p.imgObj = img;
-        drawWheel();
-      };
-      img.onerror = () => {
-        img.src = p.fallback;
         p.imgObj = img;
         drawWheel();
       };
@@ -273,22 +221,20 @@
         ctx.translate(radius, radius);
         ctx.rotate(angle + arcSize / 2);
 
-        // Draw Product Label
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 9.5px sans-serif";
-        ctx.shadowColor = "rgba(0,0,0,0.8)";
+        ctx.font = "bold 9px sans-serif";
+        ctx.shadowColor = "rgba(0,0,0,0.85)";
         ctx.shadowBlur = 4;
-        ctx.fillText(PRIZES[i].text, radius - 8, -6);
+        ctx.fillText(PRIZES[i].text, radius - 8, -5);
 
-        // Draw Real Product Photo directly on Wheel slice
-        if (PRIZES[i].imgObj && PRIZES[i].imgObj.complete) {
+        if (PRIZES[i].imgObj && PRIZES[i].imgObj.complete && PRIZES[i].imgObj.naturalWidth > 0) {
           try {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(radius - 36, 12, 14, 0, 2 * Math.PI);
+            ctx.arc(radius - 36, 12, 13, 0, 2 * Math.PI);
             ctx.clip();
-            ctx.drawImage(PRIZES[i].imgObj, radius - 50, -2, 28, 28);
+            ctx.drawImage(PRIZES[i].imgObj, radius - 49, -1, 26, 26);
             ctx.restore();
           } catch(e) {}
         }
@@ -296,7 +242,6 @@
         ctx.restore();
       }
 
-      // Center Hub Button
       ctx.save();
       ctx.beginPath();
       ctx.arc(radius, radius, 22, 0, 2 * Math.PI);
@@ -315,64 +260,74 @@
     }
 
     async function handleReviewAndProceed() {
-      const phone = document.getElementById('userPhone').value.trim();
+      const phoneInput = document.getElementById('userPhone').value.trim();
       const errorMsg = document.getElementById('errorMsg');
       const submitBtn = document.getElementById('submitBtn');
 
-      if (!/^[6-9]\d{9}$/.test(phone)) {
+      if (!/^[6-9]\d{9}$/.test(phoneInput)) {
         errorMsg.textContent = "Please enter a valid 10-digit mobile number.";
         errorMsg.classList.remove('hidden');
         return;
       }
       errorMsg.classList.add('hidden');
-      currentPhone = phone;
+      currentPhone = phoneInput;
+
+      // 1. INSTANT 0ms Check (Local cache for lightning speed)
+      const cached = localStorage.getItem('jbm_claim_' + currentPhone);
+      if (cached) {
+        try {
+          showAlreadyClaimedScreen(JSON.parse(cached));
+          return;
+        } catch(e) {}
+      }
 
       submitBtn.disabled = true;
-      submitBtn.textContent = "Checking records...";
+      submitBtn.textContent = "Verifying Number...";
 
-      // Check database to see if phone already claimed
+      // 2. Network Check with a 4-second timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
       try {
-        const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}`);
+        const response = await fetch(`${SCRIPT_URL}?action=CHECK&phone=${currentPhone}`, {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
         const data = await response.json();
 
         if (data.exists) {
-          // Display the item & token they previously won
+          localStorage.setItem('jbm_claim_' + currentPhone, JSON.stringify(data));
           showAlreadyClaimedScreen(data);
           submitBtn.disabled = false;
           submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
-          return;
+          return; // STOPS HERE. NEVER shows wheel for existing numbers!
         }
       } catch (err) {
-        console.warn("Database check notice:", err);
+        clearTimeout(timeoutId);
+        console.warn("Server check note:", err);
       }
 
       submitBtn.disabled = false;
       submitBtn.textContent = "Rate on Google & Spin Wheel ➔";
 
-      // 1. Open Google Review modal
+      // 3. New user validated: Launch Review and Show Wheel
       window.open(GOOGLE_REVIEW_URL, '_blank');
-
-      // 2. Open Wheel Screen
       document.getElementById('screenEntry').classList.add('hidden');
       document.getElementById('screenWheel').classList.remove('hidden');
     }
 
     function showAlreadyClaimedScreen(data) {
       document.getElementById('screenEntry').classList.add('hidden');
+      document.getElementById('screenWheel').classList.add('hidden');
       document.getElementById('blockedPhone').textContent = data.phone || currentPhone;
       document.getElementById('blockedPrizeName').textContent = data.prize || "In-store Accessory";
       document.getElementById('blockedToken').textContent = data.token || "#JBM-CLAIMED";
       document.getElementById('blockedDate').textContent = data.date ? `Redeemed on: ${data.date}` : "";
 
-      // Find image matching the won prize
-      const matched = PRIZES.find(p => p.text.toLowerCase().trim() === (data.prize || "").toLowerCase().trim());
+      const prizeName = (data.prize || "").toLowerCase().trim();
+      const matched = PRIZES.find(p => prizeName.includes(p.text.toLowerCase().trim()) || p.text.toLowerCase().includes(prizeName));
       const imgElem = document.getElementById('blockedImg');
-      if (matched) {
-        imgElem.src = matched.image;
-        imgElem.onerror = () => { imgElem.src = matched.fallback; };
-      } else {
-        imgElem.src = PRIZES[0].fallback;
-      }
+      imgElem.src = matched ? matched.image : "earphones.png";
 
       document.getElementById('screenBlocked').classList.remove('hidden');
     }
@@ -425,15 +380,21 @@
       const wonPrize = PRIZES[selectedPrizeIndex];
       const token = "#JBM-" + Math.floor(1000 + Math.random() * 9000);
 
-      // Save directly into Google Sheet
+      // Save to Google Sheet
       fetch(`${SCRIPT_URL}?action=RECORD&phone=${encodeURIComponent(currentPhone)}&prize=${encodeURIComponent(wonPrize.text)}&token=${encodeURIComponent(token)}`)
-        .catch(err => console.error("Error logging to Google Sheet:", err));
+        .catch(err => console.error(err));
 
-      // Display real photo & voucher
-      const rewardImg = document.getElementById('rewardImg');
-      rewardImg.src = wonPrize.image;
-      rewardImg.onerror = () => { rewardImg.src = wonPrize.fallback; };
+      // Save locally to block repeated spins instantly
+      localStorage.setItem('jbm_claim_' + currentPhone, JSON.stringify({
+        exists: true,
+        phone: currentPhone,
+        prize: wonPrize.text,
+        token: token,
+        date: new Date().toLocaleDateString('en-IN')
+      }));
 
+      // Render podium
+      document.getElementById('rewardImg').src = wonPrize.image;
       document.getElementById('rewardName').textContent = wonPrize.text;
       document.getElementById('rewardPhone').textContent = currentPhone;
       document.getElementById('tokenCode').textContent = token;
